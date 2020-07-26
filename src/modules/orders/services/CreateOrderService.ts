@@ -1,4 +1,4 @@
-import { inject, injectable, container } from 'tsyringe';
+import { inject, injectable } from 'tsyringe';
 
 import AppError from '@shared/errors/AppError';
 
@@ -66,6 +66,8 @@ class CreateOrderService {
       price: p.price,
       quantity: productsOrderQuantity[p.id],
     }));
+
+    await this.productsRepository.updateQuantity(productsIds);
 
     const order = await this.ordersRepository.create({
       customer,
