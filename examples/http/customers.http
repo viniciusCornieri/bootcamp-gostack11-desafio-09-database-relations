@@ -1,0 +1,13 @@
+@base_url=http://localhost:3333
+
+###
+
+# @name create_customer
+
+POST {{base_url}}/customers
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "email": "john.doe@mail.com"
+}
