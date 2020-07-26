@@ -1,15 +1,15 @@
 # Compatible with vscode rest-client extension
-
 @base_url=http://localhost:3333
 
 ###
 
-# @name create_customer
+# @name create_products
 
-POST {{base_url}}/customers
+POST {{base_url}}/products
 Content-Type: application/json
 
 {
-  "name": "John Doe",
-  "email": "john.doe@mail.com"
+  "name": "Pencil",
+  "price": 1.2,
+  "quantity": 100
 }
