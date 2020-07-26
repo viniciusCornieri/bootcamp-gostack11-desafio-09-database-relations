@@ -17,3 +17,9 @@ Content-Type: application/json
     }
   ]
 }
+
+###
+# @name get_order
+
+GET {{base_url}}/orders/169dd35e-dab8-470e-b143-c58340b00e15
+Content-Type: application/json

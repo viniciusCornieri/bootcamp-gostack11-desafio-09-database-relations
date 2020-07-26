@@ -21,17 +21,22 @@ class Order {
   @PrimaryColumn()
   id: string;
 
-  @ManyToOne(_type => Customer)
+  @ManyToOne(_type => Customer, { eager: true })
   @JoinColumn({ name: 'customer_id' })
   customer: Customer;
 
   @OneToMany(_type => OrdersProducts, order_product => order_product.order, {
     cascade: true,
+    eager: true,
   })
   order_products: OrdersProducts[];
 
   @ManyToMany(_type => Product, products => products.orders)
-  @JoinTable()
+  @JoinTable({
+    name: 'orders_products',
+    joinColumn: { name: 'order_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'product_id', referencedColumnName: 'id' },
+  })
   products: Product[];
 
   @CreateDateColumn()
