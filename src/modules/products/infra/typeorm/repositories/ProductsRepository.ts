@@ -35,7 +35,7 @@ class ProductsRepository implements IProductsRepository {
   }
 
   public async findAllById(products: IFindProducts[]): Promise<Product[]> {
-    throw new Error('Not implemented yet');
+    return this.ormRepository.findByIds(products);
   }
 
   public async updateQuantity(

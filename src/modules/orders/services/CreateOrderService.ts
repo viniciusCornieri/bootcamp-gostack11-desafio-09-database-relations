@@ -1,4 +1,4 @@
-import { inject, injectable } from 'tsyringe';
+import { inject, injectable, container } from 'tsyringe';
 
 import AppError from '@shared/errors/AppError';
 
@@ -20,13 +20,54 @@ interface IRequest {
 @injectable()
 class CreateOrderService {
   constructor(
+    @inject('OrdersRepository')
     private ordersRepository: IOrdersRepository,
+    @inject('ProductsRepository')
     private productsRepository: IProductsRepository,
+    @inject('CustomersRepository')
     private customersRepository: ICustomersRepository,
   ) {}
 
-  public async execute({ customer_id, products }: IRequest): Promise<Order> {
-    // TODO
+  public async execute({
+    customer_id,
+    products: productsIds,
+  }: IRequest): Promise<Order> {
+    const customer = await this.customersRepository.findById(customer_id);
+
+    if (!customer) {
+      throw new AppError('Customer does not exist');
+    }
+
+    const foundProducts = await this.productsRepository.findAllById(
+      productsIds,
+    );
+
+    if (foundProducts.length !== productsIds.length) {
+      const notFoundProducts = foundProducts.filter(
+        p => !productsIds.find(pId => pId.id === p.id),
+      );
+      throw new AppError(
+        `Has some product that does not exist: ${notFoundProducts}`,
+      );
+    }
+
+    const productsQuantityMap: Record<string, number> = {};
+    productsIds.forEach(p =>
+      Object.assign(productsQuantityMap, { [p.id]: p.quantity }),
+    );
+
+    const products = foundProducts.map(p => ({
+      product_id: p.id,
+      price: p.price,
+      quantity: productsQuantityMap[p.id],
+    }));
+
+    const order = await this.ordersRepository.create({
+      customer,
+      products,
+    });
+
+    return order;
   }
 }
 

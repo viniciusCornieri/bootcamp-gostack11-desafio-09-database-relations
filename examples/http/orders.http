@@ -1,0 +1,19 @@
+# Compatible with vscode rest-client extension
+@base_url=http://localhost:3333
+
+###
+
+# @name create_products
+
+POST {{base_url}}/orders
+Content-Type: application/json
+
+{
+  "customer_id": "53870fed-159b-481f-932b-2c8285ccf79b",
+  "products": [
+    {
+      "id": "132a9203-0b7d-482b-ae6c-dd4623a589b1",
+      "quantity": 2
+    }
+  ]
+}
