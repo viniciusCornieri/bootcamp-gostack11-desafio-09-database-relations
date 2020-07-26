@@ -51,15 +51,20 @@ class CreateOrderService {
       );
     }
 
-    const productsQuantityMap: Record<string, number> = {};
+    const productsOrderQuantity: Record<string, number> = {};
     productsIds.forEach(p =>
-      Object.assign(productsQuantityMap, { [p.id]: p.quantity }),
+      Object.assign(productsOrderQuantity, { [p.id]: p.quantity }),
     );
+
+    foundProducts.forEach(p => {
+      if (productsOrderQuantity[p.id] > p.quantity)
+        throw new AppError(`${p.name} has not sufficient items in stock`);
+    });
 
     const products = foundProducts.map(p => ({
       product_id: p.id,
       price: p.price,
-      quantity: productsQuantityMap[p.id],
+      quantity: productsOrderQuantity[p.id],
     }));
 
     const order = await this.ordersRepository.create({
